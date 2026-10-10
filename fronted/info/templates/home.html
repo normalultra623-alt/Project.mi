@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FormulaBlog — F1 Dünyasının Ən Yaxşı Analiz Platforması</title>
+  <meta name="description" content="Formula 1 dünyasını ətraflı araşdıran, texniki analiz, yarış reportajı və sürücü profilləri üzrə Azərbaycanın premier F1 blog platforması.">
+  <meta property="og:title" content="FormulaBlog — F1 Analiz Platforması">
+  <meta property="og:description" content="Formula 1 dünyasını ətraflı araşdıran premium blog.">
+  <meta property="og:type" content="website">
+  <base href="./">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏎️</text></svg>">
+</head>
+<body>
+
+{% block main %}
+
+<section class="section" id="latest-posts-section" aria-labelledby="latest-posts-title">
+  <div class="container">
+    <header class="section-header reveal">
+      <p class="section-header__eyebrow">Son Məqalələr</p>
+      <h2 class="section-header__title" id="latest-posts-title">Ən Son Yazılar</h2>
+      <p class="section-header__desc">Redaksiyamızın ən son yayımladığı texniki analiz, yarış reportajı və sürücü profilləri.</p>
+    </header>
+
+
+    <div class="grid-3" id="latest-posts-grid">
+      <div class="skeleton skeleton--card"></div>
+      <div class="skeleton skeleton--card"></div>
+      <div class="skeleton skeleton--card"></div>
+      <div class="skeleton skeleton--card"></div>
+      <div class="skeleton skeleton--card"></div>
+      <div class="skeleton skeleton--card"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem" class="reveal reveal-delay-3">
+      <a href="blog.html" class="btn btn--secondary btn--lg" id="all-posts-btn">
+        Bütün Məqalələrə Bax
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock main %}
+
+
+
+
+
+
+  <script type="module">
+    import { getPosts, getAuthors, getTags } from './assets/js/data.js';
+    import {
+      renderHeader, renderFooter,
+      renderArticleCard, renderSkeletonCard,
+      initHeaderBehavior, highlightActiveNav,
+      initReveal, initParallax, icon
+    } from './assets/js/utils.js';
+
+    // Inject header & footer
+    document.getElementById('header-root').innerHTML = renderHeader();
+    document.getElementById('footer-root').innerHTML = renderFooter();
+    initHeaderBehavior();
+    highlightActiveNav();
+
+    async function init() {
+      // Load data
+      const [posts, authors, tags] = await Promise.all([getPosts(), getAuthors(), getTags()]);
+
+      // Build author map
+      const authorMap = Object.fromEntries(authors.map(a => [a.id, a]));
+
+      // Render latest 6 posts
+      const latest6 = posts.slice(0, 6);
+      const grid = document.getElementById('latest-posts-grid');
+      grid.innerHTML = latest6.map(p => renderArticleCard(p, authorMap[p.authorId])).join('');
+
+      // Render tags cloud
+      const cloud = document.getElementById('tags-cloud');
+      cloud.innerHTML = tags.map(tag => `
+        <a href="blog.html?tag=${encodeURIComponent(tag)}" class="tag tag--neutral reveal" role="listitem">${tag}</a>
+      `).join('');
+
+      // Reveal animations
+      initReveal();
+      initParallax();
+    }
+
+    init().catch(err => {
+      console.error('Init failed:', err);
+      document.getElementById('latest-posts-grid').innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-state__icon">${icon('inbox')}</div>
+          <h3 class="empty-state__title">Məlumat yüklənmədi</h3>
+          <p class="empty-state__desc">Səhifəni yeniləyin. Lokal server işləmirsə data yüklənə bilmir.</p>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

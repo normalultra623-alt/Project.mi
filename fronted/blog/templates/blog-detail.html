@@ -1,0 +1,260 @@
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Məqalə — FormulaBlog</title>
+  <meta name="description" id="page-desc" content="Formula 1 məqalə detalı — FormulaBlog">
+  <base href="./">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏎️</text></svg>">
+  <style>
+    .blog-detail__info-sep {
+      display: inline-block; width: 4px; height: 4px;
+      background: var(--clr-text-muted); border-radius: 50%;
+    }
+    .reading-time {
+      display: flex; align-items: center; gap: .375rem;
+      font-size: .75rem; color: var(--clr-text-muted);
+    }
+    .reading-time svg { width: 14px; height: 14px; }
+    .breadcrumb {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .875rem; color: var(--clr-text-muted);
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .breadcrumb a { color: var(--clr-text-muted); text-decoration: none; transition: color var(--transition,300ms); }
+    .breadcrumb a:hover { color: var(--clr-accent); }
+    .breadcrumb svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .breadcrumb .current { color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div id="header-root"></div>
+
+  <main id="main-content">
+
+    <!-- Article Not Found (hidden until needed) -->
+    <div id="not-found" class="not-found-page" style="display:none">
+      <div class="not-found-page__code">404</div>
+      <h1 class="not-found-page__title">Məqalə Tapılmadı</h1>
+      <p class="not-found-page__desc">Axtardığınız məqalə mövcud deyil və ya silinib. Blog səhifəsinə qayıdın.</p>
+      <a href="blog.html" class="btn btn--primary" style="margin-top:1.5rem">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Bloga Qayıt
+      </a>
+    </div>
+
+    <!-- Article Detail (hidden while loading) -->
+    <article id="article-detail" style="display:none" itemscope itemtype="https://schema.org/BlogPosting">
+
+      <!-- Cover image -->
+      <div class="blog-detail__cover" id="cover-wrap">
+        <img id="cover-img" src="" alt="" width="1200" height="520" loading="eager">
+      </div>
+
+      <!-- Meta bar -->
+      <div class="blog-detail__meta-bar">
+        <nav class="breadcrumb" aria-label="Naviqasiya yolu">
+          <a href="index.html">Ana Səhifə</a>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          <a href="blog.html">Blog</a>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="current" id="breadcrumb-title">Məqalə</span>
+        </nav>
+
+        <div class="blog-detail__tags" id="article-tags" aria-label="Teqlər"></div>
+
+        <h1 class="blog-detail__title" id="article-title" itemprop="headline"></h1>
+
+        <div class="blog-detail__info">
+          <div class="blog-detail__author-mini" id="author-mini">
+            <img id="author-avatar" src="" alt="" loading="lazy">
+            <div>
+              <div class="name" id="author-name"></div>
+              <div class="date" id="article-date"></div>
+            </div>
+          </div>
+          <span class="blog-detail__info-sep" aria-hidden="true"></span>
+          <div class="reading-time" aria-label="Oxuma müddəti">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="reading-time-text">5 dəq oxuma</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-column layout -->
+      <div class="blog-detail__layout">
+        <!-- Main content -->
+        <div class="blog-detail__body">
+          <div class="article-content" id="article-content" itemprop="articleBody"></div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="blog-detail__sidebar" aria-label="Yan panel">
+          <!-- Author Card -->
+          <div class="author-card reveal">
+            <img class="author-card__avatar" id="sidebar-author-avatar" src="" alt="" loading="lazy">
+            <div class="author-card__name" id="sidebar-author-name"></div>
+            <div class="author-card__role" id="sidebar-author-role"></div>
+            <p class="author-card__bio" id="sidebar-author-bio"></p>
+          </div>
+
+          <!-- Share buttons -->
+          <div class="share-buttons reveal reveal-delay-1">
+            <div class="share-buttons__title">Paylaş</div>
+            <div class="share-buttons__list" id="share-btns"></div>
+          </div>
+        </aside>
+      </div>
+    </article>
+
+    <!-- Related posts -->
+    <section class="related-section" id="related-section" style="display:none" aria-labelledby="related-title">
+      <div class="related-section__inner">
+        <h2 class="related-section__title" id="related-title">Oxşar Məqalələr</h2>
+        <div class="grid-3" id="related-grid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-root"></div>
+
+  <script type="module">
+    import { getPosts, getAuthors, getPostBySlug, getAuthorById, getRelatedPosts } from './assets/js/data.js';
+    import {
+      renderHeader, renderFooter, renderArticleCard,
+      initHeaderBehavior, highlightActiveNav,
+      initReveal, icon
+    } from './assets/js/utils.js';
+
+    document.getElementById('header-root').innerHTML = renderHeader();
+    document.getElementById('footer-root').innerHTML = renderFooter();
+    initHeaderBehavior();
+    highlightActiveNav();
+
+    function formatDate(str) {
+      return new Date(str).toLocaleDateString('az-AZ', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function estimateReadingTime(htmlContent) {
+      const text = htmlContent.replace(/<[^>]+>/g, '');
+      const words = text.trim().split(/\s+/).length;
+      return Math.max(1, Math.round(words / 200));
+    }
+
+    async function init() {
+      const slug = new URLSearchParams(location.search).get('slug');
+
+      const [allPosts, allAuthors] = await Promise.all([getPosts(), getAuthors()]);
+      const authorMap = Object.fromEntries(allAuthors.map(a => [a.id, a]));
+
+      if (!slug) {
+        showNotFound();
+        return;
+      }
+
+      const post = allPosts.find(p => p.slug === slug);
+      if (!post) {
+        showNotFound();
+        return;
+      }
+
+      const author = authorMap[post.authorId];
+
+      // Populate page meta
+      document.getElementById('page-title').textContent = `${post.title} — FormulaBlog`;
+      document.getElementById('page-desc').content = post.excerpt;
+
+      // Cover
+      const coverImg = document.getElementById('cover-img');
+      coverImg.src = post.image;
+      coverImg.alt = post.title;
+
+      // Breadcrumb
+      document.getElementById('breadcrumb-title').textContent = post.title.slice(0, 40) + (post.title.length > 40 ? '…' : '');
+
+      // Tags
+      document.getElementById('article-tags').innerHTML = post.tags
+        .map(t => `<a href="blog.html?tag=${encodeURIComponent(t)}" class="tag">${t}</a>`)
+        .join('');
+
+      // Title & info
+      document.getElementById('article-title').textContent = post.title;
+      document.getElementById('article-date').textContent = formatDate(post.date);
+
+      if (author) {
+        document.getElementById('author-avatar').src = author.avatar;
+        document.getElementById('author-avatar').alt = author.name;
+        document.getElementById('author-name').textContent = author.name;
+
+        // Sidebar
+        document.getElementById('sidebar-author-avatar').src = author.avatar;
+        document.getElementById('sidebar-author-avatar').alt = author.name;
+        document.getElementById('sidebar-author-name').textContent = author.name;
+        document.getElementById('sidebar-author-role').textContent = author.role;
+        document.getElementById('sidebar-author-bio').textContent = author.bio;
+      }
+
+      // Reading time
+      const mins = estimateReadingTime(post.content);
+      document.getElementById('reading-time-text').textContent = `${mins} dəq. oxuma`;
+
+      // Content
+      document.getElementById('article-content').innerHTML = post.content;
+
+      // Share buttons
+      const pageUrl = encodeURIComponent(location.href);
+      const pageTitle = encodeURIComponent(post.title);
+      document.getElementById('share-btns').innerHTML = `
+        <a href="https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}" target="_blank" rel="noopener" aria-label="Twitter-də paylaş">
+          ${icon('twitter')} Twitter
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${pageUrl}" target="_blank" rel="noopener" aria-label="Facebook-da paylaş">
+          ${icon('facebook')} Facebook
+        </a>
+        <a href="https://wa.me/?text=${pageTitle}%20${pageUrl}" target="_blank" rel="noopener" aria-label="WhatsApp-da paylaş">
+          ${icon('whatsapp')} WhatsApp
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}" target="_blank" rel="noopener" aria-label="LinkedIn-də paylaş">
+          ${icon('linkedin')} LinkedIn
+        </a>
+        <a href="#" id="copy-link-btn" aria-label="Linki kopyala">
+          ${icon('copy')} Kopyala
+        </a>
+      `;
+
+      document.getElementById('copy-link-btn')?.addEventListener('click', e => {
+        e.preventDefault();
+        navigator.clipboard.writeText(location.href).then(() => {
+          import('./assets/js/utils.js').then(({ showToast }) => showToast('Link kopyalandı!', 'success'));
+        });
+      });
+
+      // Related posts
+      const related = getRelatedPosts(post, allPosts, 3);
+      if (related.length) {
+        document.getElementById('related-section').style.display = '';
+        document.getElementById('related-grid').innerHTML = related
+          .map(p => renderArticleCard(p, authorMap[p.authorId]))
+          .join('');
+      }
+
+      // Show article
+      document.getElementById('article-detail').style.display = '';
+      initReveal();
+    }
+
+    function showNotFound() {
+      document.getElementById('not-found').style.display = 'flex';
+      document.getElementById('article-detail').style.display = 'none';
+    }
+
+    init().catch(err => {
+      console.error(err);
+      showNotFound();
+    });
+  </script>
+</body>
+</html>

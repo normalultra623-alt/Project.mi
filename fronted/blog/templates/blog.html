@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — FormulaBlog | Bütün F1 Məqalələri</title>
+  <meta name="description" content="Formula 1 məqalələri – texniki analiz, yarış reportajı, sürücü profillərini kateqoriya, teq və müəllif üzrə filtrləyin.">
+  <base href="./">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏎️</text></svg>">
+  <style>
+    /* Extra blog-page specific overrides */
+    .author-filter {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      padding: .625rem 1rem;
+      font-size: .875rem;
+      color: #fff;
+      font-family: var(--font-primary);
+      cursor: pointer;
+      transition: border-color var(--transition);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff80' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right .75rem center;
+      background-size: 16px;
+      padding-right: 2rem;
+      min-width: 180px;
+    }
+    .author-filter:focus { outline: none; border-color: var(--clr-accent); }
+  </style>
+</head>
+<body>
+
+  <div id="header-root"></div>
+
+  <main id="main-content">
+
+    <!-- Page Hero -->
+    <section class="page-hero" aria-labelledby="blog-page-title">
+      <div class="page-hero__inner">
+        <p class="page-hero__eyebrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Bütün Məqalələr
+        </p>
+        <h1 class="page-hero__title" id="blog-page-title">
+          Blog <span>Arxivi</span>
+        </h1>
+        <p class="page-hero__desc">Axtarış, teq və müəllif üzrə filtrləyərək sizi maraqlandıran F1 mövzusunu tapın.</p>
+      </div>
+      <div class="red-stripe" aria-hidden="true"></div>
+    </section>
+
+    <!-- Sticky Toolbar: Search + Tags + Author filter -->
+    <div class="blog-toolbar" role="search" aria-label="Məqalə filtrləri">
+      <div class="blog-toolbar__inner">
+        <!-- Left: search + tags -->
+        <div class="blog-toolbar__left">
+          <div class="search-box">
+            <span class="search-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="search" id="search-input" placeholder="Məqalə axtar..." aria-label="Məqalə adına görə axtar" autocomplete="off">
+            <button class="search-clear" id="search-clear" aria-label="Axtarışı təmizlə">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: author + sort -->
+        <div class="blog-toolbar__right">
+          <select id="author-filter" class="author-filter" aria-label="Müəllif üzrə filtrləyin">
+            <option value="all">Bütün Müəlliflər</option>
+          </select>
+          <select id="sort-select" class="sort-select" aria-label="Sıralama">
+            <option value="newest">Ən Yeni</option>
+            <option value="oldest">Ən Köhnə</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tags Filter Row -->
+    <div style="background:var(--clr-card);border-bottom:1px solid var(--clr-border);padding:.75rem var(--container-pad)">
+      <div style="max-width:var(--container-max);margin-inline:auto">
+        <div class="tags-filter" id="tags-filter" role="group" aria-label="Teq üzrə filtrləyin">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Blog Posts Grid -->
+    <section class="section" aria-labelledby="posts-count-label">
+      <div class="container">
+        <!-- Results meta -->
+        <div class="blog-results-meta">
+          <p class="blog-results-meta__count" id="results-count" aria-live="polite" aria-atomic="true">
+            Yüklənir...
+          </p>
+        </div>
+
+        <!-- Grid -->
+        <div id="posts-grid" class="blog-posts-grid" aria-label="Məqalə siyahısı">
+          <!-- Skeleton -->
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="empty-state" style="display:none" role="status">
+          <div class="empty-state__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          </div>
+          <h2 class="empty-state__title">Nəticə Tapılmadı</h2>
+          <p class="empty-state__desc">Seçdiyiniz filtrlərə uyğun məqalə tapılmadı. Filtrləri sıfırlayıb yenidən cəhd edin.</p>
+          <button class="btn btn--primary" id="reset-filters-btn" style="margin-top:1rem">Filtrləri Sıfırla</button>
+        </div>
+
+        <!-- Pagination -->
+        <nav id="pagination" class="pagination" aria-label="Səhifələmə" style="display:none"></nav>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-root"></div>
+
+  <script type="module">
+    import { getPosts, getAuthors, getTags } from './assets/js/data.js';
+    import {
+      renderHeader, renderFooter, renderArticleCard,
+      initHeaderBehavior, highlightActiveNav,
+      initReveal, debounce, setURLParams, getURLParam, icon
+    } from './assets/js/utils.js';
+
+    document.getElementById('header-root').innerHTML = renderHeader();
+    document.getElementById('footer-root').innerHTML = renderFooter();
+    initHeaderBehavior();
+    highlightActiveNav();
+
+    const POSTS_PER_PAGE = 6;
+
+    // State
+    let state = {
+      allPosts: [],
+      authors: [],
+      query: getURLParam('q', ''),
+      tag: getURLParam('tag', 'all'),
+      author: getURLParam('author', 'all'),
+      sort: getURLParam('sort', 'newest'),
+      page: parseInt(getURLParam('page', '1')),
+    };
+
+    // DOM refs
+    const searchInput   = document.getElementById('search-input');
+    const searchClear   = document.getElementById('search-clear');
+    const authorFilter  = document.getElementById('author-filter');
+    const sortSelect    = document.getElementById('sort-select');
+    const tagsFilter    = document.getElementById('tags-filter');
+    const postsGrid     = document.getElementById('posts-grid');
+    const emptyState    = document.getElementById('empty-state');
+    const pagination    = document.getElementById('pagination');
+    const resultsCount  = document.getElementById('results-count');
+    const resetBtn      = document.getElementById('reset-filters-btn');
+
+    // Init inputs from URL params
+    searchInput.value = state.query;
+    sortSelect.value = state.sort;
+    if (state.query) searchClear.classList.add('is-visible');
+
+    // Filter + compute
+    function getFiltered() {
+      let posts = [...state.allPosts];
+
+      // Sort
+      posts.sort((a, b) => {
+        const da = new Date(a.date), db = new Date(b.date);
+        return state.sort === 'newest' ? db - da : da - db;
+      });
+
+      // Search
+      if (state.query) {
+        const q = state.query.toLowerCase();
+        posts = posts.filter(p =>
+          p.title.toLowerCase().includes(q) ||
+          p.excerpt.toLowerCase().includes(q)
+        );
+      }
+
+      // Tag
+      if (state.tag && state.tag !== 'all') {
+        posts = posts.filter(p => p.tags.includes(state.tag));
+      }
+
+      // Author
+      if (state.author && state.author !== 'all') {
+        posts = posts.filter(p => String(p.authorId) === String(state.author));
+      }
+
+      return posts;
+    }
+
+    function render() {
+      const filtered = getFiltered();
+      const total = filtered.length;
+      const totalPages = Math.ceil(total / POSTS_PER_PAGE);
+
+      // Clamp page
+      if (state.page > totalPages && totalPages > 0) state.page = totalPages;
+      if (state.page < 1) state.page = 1;
+
+      const start = (state.page - 1) * POSTS_PER_PAGE;
+      const pagePosts = filtered.slice(start, start + POSTS_PER_PAGE);
+
+      // Results count
+      resultsCount.innerHTML = total === 0
+        ? 'Nəticə tapılmadı'
+        : `<strong>${total}</strong> məqalə tapıldı`;
+
+      // Grid
+      if (pagePosts.length === 0) {
+        postsGrid.innerHTML = '';
+        postsGrid.style.display = 'none';
+        emptyState.style.display = 'flex';
+        pagination.style.display = 'none';
+      } else {
+        emptyState.style.display = 'none';
+        postsGrid.style.display = '';
+
+        const authorMap = Object.fromEntries(state.authors.map(a => [a.id, a]));
+        postsGrid.innerHTML = pagePosts.map(p => renderArticleCard(p, authorMap[p.authorId])).join('');
+        pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+
+        renderPagination(totalPages);
+        initReveal();
+      }
+
+      // Update URL
+      setURLParams({
+        q: state.query || null,
+        tag: state.tag === 'all' ? null : state.tag,
+        author: state.author === 'all' ? null : state.author,
+        sort: state.sort === 'newest' ? null : state.sort,
+        page: state.page === 1 ? null : String(state.page),
+      });
+    }
+
+    function renderPagination(totalPages) {
+      let html = '';
+      const maxBtns = 5;
+      const half = Math.floor(maxBtns / 2);
+      let rangeStart = Math.max(1, state.page - half);
+      let rangeEnd = Math.min(totalPages, rangeStart + maxBtns - 1);
+      if (rangeEnd - rangeStart < maxBtns - 1) rangeStart = Math.max(1, rangeEnd - maxBtns + 1);
+
+      // Prev
+      html += `<button class="pagination__btn pagination__btn--prev" id="pg-prev" ${state.page === 1 ? 'disabled' : ''} aria-label="Əvvəlki">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Əvvəlki
+      </button>`;
+
+      if (rangeStart > 1) {
+        html += `<button class="pagination__btn" data-page="1" aria-label="Səhifə 1">1</button>`;
+        if (rangeStart > 2) html += `<span style="color:var(--clr-text-muted);padding:.5rem">…</span>`;
+      }
+
+      for (let i = rangeStart; i <= rangeEnd; i++) {
+        html += `<button class="pagination__btn ${i === state.page ? 'active' : ''}" data-page="${i}" aria-label="Səhifə ${i}" aria-current="${i === state.page ? 'page' : 'false'}">${i}</button>`;
+      }
+
+      if (rangeEnd < totalPages) {
+        if (rangeEnd < totalPages - 1) html += `<span style="color:var(--clr-text-muted);padding:.5rem">…</span>`;
+        html += `<button class="pagination__btn" data-page="${totalPages}" aria-label="Səhifə ${totalPages}">${totalPages}</button>`;
+      }
+
+      // Next
+      html += `<button class="pagination__btn pagination__btn--next" id="pg-next" ${state.page === totalPages ? 'disabled' : ''} aria-label="Növbəti">
+        Növbəti
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>`;
+
+      pagination.innerHTML = html;
+
+      // Events
+      pagination.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.page = parseInt(btn.dataset.page);
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+      document.getElementById('pg-prev')?.addEventListener('click', () => {
+        if (state.page > 1) { state.page--; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      });
+      document.getElementById('pg-next')?.addEventListener('click', () => {
+        const filtered = getFiltered();
+        const totalPages = Math.ceil(filtered.length / POSTS_PER_PAGE);
+        if (state.page < totalPages) { state.page++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      });
+    }
+
+    function renderTagsFilter(tags) {
+      const allBtn = `<button class="tag ${state.tag === 'all' ? 'tag--active' : 'tag--neutral'}" data-tag="all" id="tag-all">Hamısı</button>`;
+      const tagBtns = tags.map(tag =>
+        `<button class="tag ${state.tag === tag ? 'tag--active' : 'tag--neutral'}" data-tag="${tag}">${tag}</button>`
+      ).join('');
+      tagsFilter.innerHTML = allBtn + tagBtns;
+
+      tagsFilter.querySelectorAll('[data-tag]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.tag = btn.dataset.tag;
+          state.page = 1;
+
+          tagsFilter.querySelectorAll('[data-tag]').forEach(b => {
+            b.classList.remove('tag--active');
+            b.classList.add('tag--neutral');
+          });
+          btn.classList.add('tag--active');
+          btn.classList.remove('tag--neutral');
+
+          render();
+        });
+      });
+    }
+
+    async function init() {
+      const [posts, authors, tags] = await Promise.all([getPosts(), getAuthors(), getTags()]);
+
+      state.allPosts = posts;
+      state.authors = authors;
+
+      // Populate author dropdown
+      authors.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a.id;
+        opt.textContent = a.name;
+        if (String(a.id) === state.author) opt.selected = true;
+        authorFilter.appendChild(opt);
+      });
+      authorFilter.value = state.author;
+
+      sortSelect.value = state.sort;
+      renderTagsFilter(tags);
+      render();
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', debounce(() => {
+      state.query = searchInput.value.trim();
+      state.page = 1;
+      searchClear.classList.toggle('is-visible', !!state.query);
+      render();
+    }, 350));
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      state.query = '';
+      state.page = 1;
+      searchClear.classList.remove('is-visible');
+      render();
+      searchInput.focus();
+    });
+
+    authorFilter.addEventListener('change', () => {
+      state.author = authorFilter.value;
+      state.page = 1;
+      render();
+    });
+
+    sortSelect.addEventListener('change', () => {
+      state.sort = sortSelect.value;
+      state.page = 1;
+      render();
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      state.query = '';
+      state.tag = 'all';
+      state.author = 'all';
+      state.sort = 'newest';
+      state.page = 1;
+      searchInput.value = '';
+      sortSelect.value = 'newest';
+      authorFilter.value = 'all';
+      searchClear.classList.remove('is-visible');
+      renderTagsFilter(state.allPosts.reduce((acc, p) => {
+        p.tags.forEach(t => { if (!acc.includes(t)) acc.push(t); });
+        return acc;
+      }, []));
+      render();
+    });
+
+    // Handle tag links from other pages
+    const urlTag = getURLParam('tag', '');
+    if (urlTag) { state.tag = urlTag; }
+
+    init().catch(err => {
+      console.error(err);
+      postsGrid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-state__icon">${icon('inbox')}</div>
+          <h2 class="empty-state__title">Məlumat Yüklənmədi</h2>
+          <p class="empty-state__desc">Lokal server başladın: npx http-server . -p 3000</p>
+        </div>`;
+    });
+  </script>
+</body>
+</html>
