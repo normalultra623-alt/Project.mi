@@ -108,9 +108,9 @@ export function highlightActiveNav() {
     const href = link.getAttribute('href');
     let active = false;
 
-    if (href === 'index.html' || href === '/' || href === './') {
-      active = path === '/' || path.endsWith('index.html') || path === '';
-    } else if (href && path.includes(href.replace('.html', ''))) {
+    if (href === '/') {
+      active = path === '/';
+    } else if (href && href !== '#' && path.startsWith(href)) {
       active = true;
     }
 
@@ -160,15 +160,14 @@ export function renderHeader() {
   return `
     <header class="header" id="site-header">
       <div class="header__inner">
-        <a href="index.html" class="header__logo" aria-label="Formula Blog Ana Səhifə">
+        <a href="/" class="header__logo" aria-label="Formula Blog Ana Səhifə">
           <div class="logo-mark">F</div>
           <span class="logo-text">Formula<span>Blog</span></span>
         </a>
         <nav class="header__nav" aria-label="Əsas naviqasiya">
-          <a href="index.html" class="nav__link" id="nav-home">Ana Səhifə</a>
-          <a href="blog.html" class="nav__link" id="nav-blog">Blog</a>
-          <a href="about.html" class="nav__link" id="nav-about">Haqqımızda</a>
-          <a href="contact.html" class="nav__link" id="nav-contact">Əlaqə</a>
+          <a href="/" class="nav__link" id="nav-home">Ana Səhifə</a>
+          <a href="/blog/" class="nav__link" id="nav-blog">Blog</a>
+          <a href="/contact/" class="nav__link" id="nav-contact">Əlaqə</a>
         </nav>
         <div class="header__actions">
           <button class="hamburger" id="hamburger" aria-label="Menyunu aç/bağla" aria-expanded="false">
@@ -178,10 +177,9 @@ export function renderHeader() {
       </div>
     </header>
     <nav class="mobile-nav" id="mobile-nav" aria-label="Mobil naviqasiya">
-      <a href="index.html" class="mobile-nav__link">Ana Səhifə</a>
-      <a href="blog.html" class="mobile-nav__link">Blog</a>
-      <a href="about.html" class="mobile-nav__link">Haqqımızda</a>
-      <a href="contact.html" class="mobile-nav__link">Əlaqə</a>
+      <a href="/" class="mobile-nav__link">Ana Səhifə</a>
+      <a href="/blog/" class="mobile-nav__link">Blog</a>
+      <a href="/contact/" class="mobile-nav__link">Əlaqə</a>
       <div class="mobile-nav__socials">
         <a href="#" aria-label="Twitter">${icon('twitter')}</a>
         <a href="#" aria-label="Instagram">${icon('instagram')}</a>
@@ -197,7 +195,7 @@ export function renderFooter() {
     <footer class="footer" role="contentinfo">
       <div class="footer__main">
         <div class="footer__brand">
-          <a href="index.html" class="footer__logo">
+          <a href="/" class="footer__logo">
             <div class="logo-mark">F</div>
             <span class="logo-text">Formula<span>Blog</span></span>
           </a>
@@ -212,21 +210,20 @@ export function renderFooter() {
         <div>
           <p class="footer__col-title">Sürətli Keçidlər</p>
           <ul class="footer__links">
-            <li><a href="index.html">Ana Səhifə</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="about.html">Haqqımızda</a></li>
-            <li><a href="contact.html">Əlaqə</a></li>
+            <li><a href="/">Ana Səhifə</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/contact/">Əlaqə</a></li>
           </ul>
         </div>
         <div>
           <p class="footer__col-title">Kateqoriyalar</p>
           <ul class="footer__links">
-            <li><a href="blog.html?tag=Texnologiya">Texnologiya</a></li>
-            <li><a href="blog.html?tag=Yarış">Yarış</a></li>
-            <li><a href="blog.html?tag=Sürücü">Sürücülər</a></li>
-            <li><a href="blog.html?tag=Komanda">Komandalar</a></li>
-            <li><a href="blog.html?tag=Tarix">Tarix</a></li>
-            <li><a href="blog.html?tag=Strategiya">Strategiya</a></li>
+            <li><a href="/blog/?tag=Texnologiya">Texnologiya</a></li>
+            <li><a href="/blog/?tag=Yarış">Yarış</a></li>
+            <li><a href="/blog/?tag=Sürücü">Sürücülər</a></li>
+            <li><a href="/blog/?tag=Komanda">Komandalar</a></li>
+            <li><a href="/blog/?tag=Tarix">Tarix</a></li>
+            <li><a href="/blog/?tag=Strategiya">Strategiya</a></li>
           </ul>
         </div>
       </div>
@@ -255,7 +252,7 @@ export function renderArticleCard(post, author) {
   const date = formatDate(post.date);
 
   return `
-    <a href="blog-detail.html?slug=${post.slug}" class="article-card reveal" data-id="${post.id}">
+    <a href="/blog/blog-detail/?slug=${post.slug}" class="article-card reveal" data-id="${post.id}">
       <div class="article-card__image-wrap">
         <img src="${post.image}" alt="${post.title}" loading="lazy" width="400" height="200">
         ${firstTag ? `<div class="article-card__tag-overlay"><span class="tag">${firstTag}</span></div>` : ''}

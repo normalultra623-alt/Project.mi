@@ -10,7 +10,7 @@
    CSS CUSTOM PROPERTIES
    ============================================================ */
 :root {
-  --clr-bg:           #0E0E10;
+  --clr-bg:           #ffffffff;
   --clr-card:         #15151E;
   --clr-surface:      #1C1C28;
   --clr-elevated:     #22222F;
